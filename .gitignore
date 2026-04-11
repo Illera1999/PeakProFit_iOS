@@ -1,0 +1,22 @@
+# Local secrets / environment
+PeakProFit/Config/Local.xcconfig
+PeakProFit/GoogleService-Info.plist
+
+# macOS
+.DS_Store
+
+# Xcode user-specific files
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# SwiftPM local state
+.build/
+.swiftpm/
+
+# Build artifacts
+DerivedData/
+build/
+
+# Local migration backup (not for remote)
+.git_backup_from_child/

@@ -1,0 +1,19 @@
+# Local secrets / environment
+Config/Local.xcconfig
+GoogleService-Info.plist
+
+# macOS
+.DS_Store
+
+# Xcode user-specific files
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+
+# SwiftPM local state
+.build/
+.swiftpm/
+
+# Build artifacts
+DerivedData/
+build/

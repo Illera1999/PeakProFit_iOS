@@ -1,0 +1,7 @@
+// Debug.xcconfig
+// 1) Copy Config/Local.xcconfig.example to Config/Local.xcconfig
+// 2) Set your RAPID_API_KEY in Config/Local.xcconfig
+// 3) Keep Local.xcconfig out of git
+RAPID_API_KEY = YOUR_RAPIDAPI_KEY_HERE
+API_BASE_URL = https:/$()/exercisedb.p.rapidapi.com
+#include? "Local.xcconfig"

@@ -1,0 +1,5 @@
+// Copy this file to Local.xcconfig (same folder) and set your key.
+// Local.xcconfig is ignored by git.
+
+RAPID_API_KEY = YOUR_REAL_RAPIDAPI_KEY
+
