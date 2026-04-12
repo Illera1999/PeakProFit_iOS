@@ -11,11 +11,8 @@ import FirebaseCore
 
 @main
 struct PeakProFitApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     private let persistenceController = PersistenceController.shared
-
-    init() {
-        FirebaseApp.configure()
-    }
 
     var body: some Scene {
         WindowGroup {
