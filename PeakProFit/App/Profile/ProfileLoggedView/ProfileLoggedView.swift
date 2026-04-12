@@ -17,6 +17,8 @@ import FirebaseAuth
 struct ProfileLoggedView: View {
     
     @State private var session = SessionViewModel.shared
+    @State private var isShowingDeleteAccountAlert = false
+    @State private var isDeletingAccount = false
 
     let currectUser: User
     
@@ -49,11 +51,48 @@ struct ProfileLoggedView: View {
             .buttonStyle(.plain)
 
             Spacer()
+
+            Button("Delete account") {
+                isShowingDeleteAccountAlert = true
+            }
+            .font(.custom("Lexend-Medium", size: 14))
+            .foregroundStyle(.red)
+            .buttonStyle(.plain)
+            .disabled(isDeletingAccount)
+
             Button("Log out") {
                 session.signOut()
             }
             .styleDangerActionButton()
+            .disabled(isDeletingAccount)
             .padding(.bottom, 24)
+        }
+        .alert("Delete account?", isPresented: $isShowingDeleteAccountAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Delete", role: .destructive) {
+                Task { await deleteAccount() }
+            }
+        } message: {
+            Text("This action is permanent and cannot be undone.")
+        }
+    }
+
+    private func deleteAccount() async {
+        guard !isDeletingAccount else { return }
+        isDeletingAccount = true
+        defer { isDeletingAccount = false }
+
+        do {
+            try await session.deleteAccount()
+            SnackbarCenter.shared.show(
+                message: "Your account has been deleted.",
+                style: .success
+            )
+        } catch {
+            SnackbarCenter.shared.show(
+                message: AuthErrorMapper.deleteAccountMessage(from: error),
+                style: .error
+            )
         }
     }
 }

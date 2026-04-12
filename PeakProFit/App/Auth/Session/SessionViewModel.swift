@@ -52,6 +52,19 @@ final class SessionViewModel {
         isGuestMode = false
     }
 
+    func deleteAccount() async throws {
+        guard let user = Auth.auth().currentUser else {
+            throw NSError(
+                domain: "SessionViewModel",
+                code: AuthErrorCode.userNotFound.rawValue,
+                userInfo: [NSLocalizedDescriptionKey: "No authenticated user."]
+            )
+        }
+
+        try await user.delete()
+        isGuestMode = false
+    }
+
     deinit {
         if let handle {
             Auth.auth().removeStateDidChangeListener(handle)

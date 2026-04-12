@@ -56,4 +56,24 @@ enum AuthErrorMapper {
             return "Unable to send reset email. Please try again."
         }
     }
+
+    static func deleteAccountMessage(from error: Error) -> String {
+        let nsError = error as NSError
+        guard let code = AuthErrorCode(rawValue: nsError.code) else {
+            return "Unable to delete account. Please try again."
+        }
+
+        switch code {
+        case .requiresRecentLogin:
+            return "For security, please log in again before deleting your account."
+        case .networkError:
+            return "Network error. Check your connection and try again."
+        case .userNotFound:
+            return "Account not found."
+        case .tooManyRequests:
+            return "Too many attempts. Please try again later."
+        default:
+            return "Unable to delete account. Please try again."
+        }
+    }
 }
