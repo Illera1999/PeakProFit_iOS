@@ -61,7 +61,13 @@ final class SessionViewModel {
             )
         }
 
+        let userId = user.uid
         try await user.delete()
+        do {
+            try FavoritesStore.shared.removeAllFavorites(userId: userId)
+        } catch {
+            print("Local favorites cleanup error: \(error.localizedDescription)")
+        }
         isGuestMode = false
     }
 

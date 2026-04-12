@@ -44,6 +44,21 @@ final class FavoritesStore {
         }
     }
 
+    func removeAllFavorites(userId: String) throws {
+        let request = NSFetchRequest<NSManagedObject>(entityName: "FavoriteExercise")
+        request.predicate = NSPredicate(format: "userId == %@", userId)
+        let objects = try context.fetch(request)
+
+        for object in objects {
+            context.delete(object)
+        }
+
+        if context.hasChanges {
+            try context.save()
+            NotificationCenter.default.post(name: .favoritesDidChange, object: nil)
+        }
+    }
+
     func fetchFavorites(userId: String) throws -> [ExerciseEntity] {
         let request = NSFetchRequest<NSManagedObject>(entityName: "FavoriteExercise")
         request.predicate = NSPredicate(format: "userId == %@", userId)
