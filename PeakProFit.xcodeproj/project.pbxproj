@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		79701D4F2F709D9400B5CC34 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 79701D4E2F709D9400B5CC34 /* SDWebImageSwiftUI */; };
 		799551192F75F98F001F7D97 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 799551182F75F98F001F7D97 /* FirebaseAuth */; };
-		7995511B2F75F98F001F7D97 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 7995511A2F75F98F001F7D97 /* FirebaseFirestore */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,7 +43,6 @@
 			files = (
 				79701D4F2F709D9400B5CC34 /* SDWebImageSwiftUI in Frameworks */,
 				799551192F75F98F001F7D97 /* FirebaseAuth in Frameworks */,
-				7995511B2F75F98F001F7D97 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +87,6 @@
 			packageProductDependencies = (
 				79701D4E2F709D9400B5CC34 /* SDWebImageSwiftUI */,
 				799551182F75F98F001F7D97 /* FirebaseAuth */,
-				7995511A2F75F98F001F7D97 /* FirebaseFirestore */,
 			);
 			productName = PeakProFit;
 			productReference = 792BFD772F61FC3C000CB1CF /* PeakProFit.app */;
@@ -409,11 +406,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 799551172F75F98F001F7D97 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseAuth;
-		};
-		7995511A2F75F98F001F7D97 /* FirebaseFirestore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 799551172F75F98F001F7D97 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseFirestore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
