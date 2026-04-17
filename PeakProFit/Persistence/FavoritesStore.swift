@@ -8,6 +8,7 @@ extension Notification.Name {
 @MainActor
 final class FavoritesStore {
     static let shared = FavoritesStore()
+    private static let maxNoteLength = 124
 
     private let context: NSManagedObjectContext
 
@@ -68,6 +69,46 @@ final class FavoritesStore {
         return objects.compactMap(mapToExerciseEntity)
     }
 
+    func updatePersonalNote(userId: String, exerciseId: String, note: String) throws {
+        guard let object = favoriteObject(userId: userId, exerciseId: exerciseId) else { return }
+        let safeNote = String(note.prefix(Self.maxNoteLength))
+        object.setValue(safeNote, forKey: "personalNote")
+
+        if context.hasChanges {
+            try context.save()
+            NotificationCenter.default.post(name: .favoritesDidChange, object: nil)
+        }
+    }
+
+    func fetchPersonalNote(userId: String, exerciseId: String) -> String {
+        guard let object = favoriteObject(userId: userId, exerciseId: exerciseId) else { return "" }
+        return (object.value(forKey: "personalNote") as? String) ?? ""
+    }
+
+    func updateStoredExerciseInfo(
+        userId: String,
+        exerciseId: String,
+        instructions: [String],
+        difficulty: String?
+    ) throws {
+        guard let object = favoriteObject(userId: userId, exerciseId: exerciseId) else { return }
+        object.setValue(serialize(instructions), forKey: "instructionsRaw")
+
+        if let normalizedDifficulty = normalizeText(difficulty) {
+            object.setValue(normalizedDifficulty, forKey: "difficulty")
+        }
+
+        if context.hasChanges {
+            try context.save()
+        }
+    }
+
+    func fetchStoredInstructions(userId: String, exerciseId: String) -> [String] {
+        guard let object = favoriteObject(userId: userId, exerciseId: exerciseId) else { return [] }
+        let instructionsRaw = object.value(forKey: "instructionsRaw") as? String
+        return deserialize(instructionsRaw)
+    }
+
     private func favoriteObject(userId: String, exerciseId: String) -> NSManagedObject? {
         let request = NSFetchRequest<NSManagedObject>(entityName: "FavoriteExercise")
         request.fetchLimit = 1
@@ -87,7 +128,14 @@ final class FavoritesStore {
         object.setValue(exercise.name, forKey: "name")
         object.setValue(serialize(exercise.targetMuscles), forKey: "targetMusclesRaw")
         object.setValue(serialize(exercise.equipments), forKey: "equipmentsRaw")
+        object.setValue(normalizeText(exercise.difficulty), forKey: "difficulty")
         object.setValue(Date(), forKey: "createdAt")
+    }
+
+    private func normalizeText(_ value: String?) -> String? {
+        guard let value else { return nil }
+        let trimmed = value.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
     }
 
     private func serialize(_ array: [String]) -> String {
@@ -115,12 +163,14 @@ final class FavoritesStore {
 
         let targetMusclesRaw = object.value(forKey: "targetMusclesRaw") as? String
         let equipmentsRaw = object.value(forKey: "equipmentsRaw") as? String
+        let difficulty = normalizeText(object.value(forKey: "difficulty") as? String)
 
         return ExerciseEntity(
             id: id,
             name: name,
             targetMuscles: deserialize(targetMusclesRaw),
-            equipments: deserialize(equipmentsRaw)
+            equipments: deserialize(equipmentsRaw),
+            difficulty: difficulty
         )
     }
 }

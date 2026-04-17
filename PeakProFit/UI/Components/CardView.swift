@@ -15,6 +15,7 @@ struct CardView: View {
     @State private var isUpdatingFavorite = false
 
     private let favoritesStore = FavoritesStore.shared
+    private let dataSource: any DataSourceProtocol = AppContainer.shared.exercisesDataSource
 
     var body: some View {
         HStack(alignment: .top, spacing: 18){
@@ -54,6 +55,12 @@ struct CardView: View {
     }
 
     private func toggleFavorite() {
+        Task {
+            await toggleFavoriteAsync()
+        }
+    }
+
+    private func toggleFavoriteAsync() async {
         guard let userId = session.currentUser?.uid else { return }
         isUpdatingFavorite = true
         defer { isUpdatingFavorite = false }
@@ -69,6 +76,7 @@ struct CardView: View {
             } else {
                 try favoritesStore.saveFavorite(exercise: exercise, userId: userId)
                 isFavorite = true
+                await enrichSavedExerciseInfo(userId: userId)
                 SnackbarCenter.shared.show(
                     message: "Exercise saved successfully.",
                     style: .success
@@ -80,6 +88,20 @@ struct CardView: View {
                 message: "We couldn't update saved exercises. Please try again.",
                 style: .error
             )
+        }
+    }
+
+    private func enrichSavedExerciseInfo(userId: String) async {
+        do {
+            let detail = try await dataSource.getExerciseDetail(exerciseID: exercise.id)
+            try favoritesStore.updateStoredExerciseInfo(
+                userId: userId,
+                exerciseId: exercise.id,
+                instructions: detail.instructions,
+                difficulty: detail.difficulty ?? exercise.difficulty
+            )
+        } catch {
+            print("[CardView] Could not cache extra favorite info: \(error.localizedDescription)")
         }
     }
 
@@ -97,6 +119,7 @@ struct CardView: View {
         id: "bench_press_01",
         name: "press de banca",
         targetMuscles: ["Pectoral", "De locos"],
-        equipments: ["Barra", "Piso"]
+        equipments: ["Barra", "Piso"],
+        difficulty: "beginner"
     ))
 }

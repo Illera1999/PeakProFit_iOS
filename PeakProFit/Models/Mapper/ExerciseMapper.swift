@@ -13,7 +13,8 @@ enum ExerciseMapper {
             id: dto.id,
             name: dto.name,
             targetMuscles: [dto.target],
-            equipments: [dto.equipment]
+            equipments: [dto.equipment],
+            difficulty: dto.difficulty
         )
     }
 }

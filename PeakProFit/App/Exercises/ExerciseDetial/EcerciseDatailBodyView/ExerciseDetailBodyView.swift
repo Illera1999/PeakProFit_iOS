@@ -73,7 +73,8 @@ struct ExerciseDetailBodyView: View {
             name: "press de banca",
             equipments: ["barra", "banco"],
             secondaryMuscles: ["triceps", "hombros"],
-            instructions: ["acuestate en el banco", "agarra la barra", "empuja hacia arriba controlando el movimiento"]
+            instructions: ["acuestate en el banco", "agarra la barra", "empuja hacia arriba controlando el movimiento"],
+            difficulty: "beginner"
         ),
         imageURL: URL(string: "https://exercisedb.p.rapidapi.com/image?exerciseId=ztAa1RK&resolution=360&rapidapi-key=YOUR_API_KEY")
     )

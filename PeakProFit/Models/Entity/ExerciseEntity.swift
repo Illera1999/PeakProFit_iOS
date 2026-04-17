@@ -12,4 +12,5 @@ struct ExerciseEntity: Identifiable, Equatable {
     let name: String
     let targetMuscles: [String]
     let equipments: [String]
+    let difficulty: String?
 }

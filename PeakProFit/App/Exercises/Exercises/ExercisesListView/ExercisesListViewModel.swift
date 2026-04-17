@@ -10,7 +10,9 @@ import Observation
 
 @Observable
 final class ExercisesListViewModel {
+    var allExercises: [ExerciseEntity] = []
     var exercises: [ExerciseEntity] = []
+    var selectedDifficulty: String?
     var isLoading = false
     var errorMessage: String?
 
@@ -20,6 +22,31 @@ final class ExercisesListViewModel {
         self.dataSource = AppContainer.shared.exercisesDataSource
     }
 
+    var availableDifficulties: [String] {
+        let difficulties = allExercises.compactMap { exercise -> String? in
+            guard let difficulty = exercise.difficulty?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !difficulty.isEmpty else {
+                return nil
+            }
+            return difficulty.lowercased()
+        }
+        return Array(Set(difficulties)).sorted()
+    }
+
+    func toggleDifficulty(_ difficulty: String) {
+        if selectedDifficulty == difficulty {
+            selectedDifficulty = nil
+        } else {
+            selectedDifficulty = difficulty
+        }
+        applyFilters()
+    }
+
+    func clearDifficultyFilter() {
+        selectedDifficulty = nil
+        applyFilters()
+    }
+
     func loadExercises() async {
         guard !isLoading else { return }
         isLoading = true
@@ -27,10 +54,23 @@ final class ExercisesListViewModel {
         defer { isLoading = false }
 
         do {
+            allExercises = []
             exercises = []
-            exercises = try await dataSource.getExercises()
+            allExercises = try await dataSource.getExercises()
+            applyFilters()
         } catch {
             errorMessage = error.localizedDescription
+        }
+    }
+
+    private func applyFilters() {
+        guard let selectedDifficulty else {
+            exercises = allExercises
+            return
+        }
+
+        exercises = allExercises.filter { exercise in
+            exercise.difficulty?.lowercased() == selectedDifficulty.lowercased()
         }
     }
 }

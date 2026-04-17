@@ -14,7 +14,8 @@ enum ExerciseDetailMapper {
             name: dto.name,
             equipments: [dto.equipment],
             secondaryMuscles: dto.secondaryMuscles,
-            instructions: dto.instructions
+            instructions: dto.instructions,
+            difficulty: dto.difficulty
         )
     }
 }
