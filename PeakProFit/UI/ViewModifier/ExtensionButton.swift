@@ -8,26 +8,31 @@
 import SwiftUI
 
 extension View {
-    func styleAuthPrimaryButton() -> some View {
-        self
+    func styleAuthPrimaryButton(backgroundColor: Color = Color("ColorBrandGreen")) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+
+        return self
             .font(.custom("Lexend-SemiBold", size: 16))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 48)
-            .background(Color("ColorBrandGreen"))
-            .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(backgroundColor)
+            .clipShape(shape)
+            .contentShape(shape)
     }
 }
 
 extension Button where Label == Text {
     func styleDangerActionButton() -> some View {
-        self
+        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+
+        return self
             .font(.custom("Lexend-SemiBold", size: 16))
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
             .frame(height: 48)
             .background(Color.red)
-            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .clipShape(shape)
+            .contentShape(shape)
     }
 }
-

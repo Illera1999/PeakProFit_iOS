@@ -60,10 +60,17 @@ struct ProfileLoggedView: View {
             .buttonStyle(.plain)
             .disabled(isDeletingAccount)
 
-            Button("Log out") {
+            Button {
                 session.signOut()
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("Log out")
+                    Spacer()
+                }
+                .styleAuthPrimaryButton(backgroundColor: .red)
             }
-            .styleDangerActionButton()
+            .buttonStyle(.plain)
             .disabled(isDeletingAccount)
             .padding(.bottom, 24)
         }
