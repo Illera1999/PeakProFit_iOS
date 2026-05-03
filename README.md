@@ -23,6 +23,8 @@ También incorpora autenticación con Firebase y configuración por entornos med
 - Login, registro y recuperación de contraseña.
 - Modo invitado para acceso sin autenticación.
 - Guardado/eliminación de favoritos en persistencia local.
+- Soporte visual para modo claro/oscuro con paleta semántica (`ColorAppBackground`, `ColorSurface`, `ColorPillBackground`).
+- Área táctil consistente en botones principales con superficie completa pulsable.
 - Feedback visual con `Snackbar` reutilizable.
 - Launch Screen e icono de app configurados para iOS.
 
@@ -69,6 +71,7 @@ PeakProFit/
 │  └─ ViewModifier/
 ├─ Utils/
 ├─ PeakProFit.xcdatamodeld/
+├─ PeakProFitTests/
 └─ Info.plist
 ```
 
@@ -139,7 +142,7 @@ Actualmente existe persistencia real en dos niveles:
 
 1. **CoreData**
 - `PersistenceController` inicializa `NSPersistentContainer`.
-- `FavoritesStore` encapsula operaciones CRUD de ejercicios favoritos.
+- `FavoritesStore` encapsula operaciones CRUD de ejercicios favoritos con acceso tipado a la entidad `FavoriteExercise`.
 - Se publica notificación de cambios para refrescar vistas.
 
 2. **Filesystem (caché)**
@@ -166,17 +169,15 @@ Actualmente existe persistencia real en dos niveles:
 5. Ejecutar en simulador (iPhone + iPad).
 
 ## 12) Testing y calidad
-En el estado actual no se observan targets de tests automatizados en el repositorio.
+Actualmente hay tests unitarios en `PeakProFitTests/` para:
+- Validaciones (`ValidationTests`)
+- Mappers (`MapperTests`)
+- Lógica de filtros/carga del listado (`ExercisesListViewModelTests`)
+- Persistencia de favoritos en Core Data in-memory (`FavoritesStoreTests`)
 
-### Propuesta de mejora
-- Añadir tests unitarios para:
-  - Mappers (`DTO -> Entity`)
-  - `APIClient` con `URLProtocol` mock
-  - lógica de ViewModels (estados de loading/error/success)
-- Añadir tests de UI para flujos críticos:
-  - autenticación
-  - listado/detalle
-  - guardar/eliminar favoritos
+### Nota importante
+- El esquema `PeakProFit` todavía no está configurado para la acción `test` en `xcodebuild`.
+- Los archivos de test están creados y listos, pero falta conectar el target/scheme de pruebas en el proyecto para ejecutarlos desde CI/CLI.
 
 ## 13) Seguridad y privacidad
 - Este README **no incluye** claves, IDs, tokens ni valores sensibles.
