@@ -10,8 +10,12 @@ final class SavedExercisesListViewModel {
 
     private let favoritesStore: FavoritesStore
 
-    init(favoritesStore: FavoritesStore? = nil) {
-        self.favoritesStore = favoritesStore ?? .shared
+    init(favoritesStore: FavoritesStore) {
+        self.favoritesStore = favoritesStore
+    }
+
+    convenience init() {
+        self.init(favoritesStore: .shared)
     }
 
     func loadFavorites(userId: String?) {

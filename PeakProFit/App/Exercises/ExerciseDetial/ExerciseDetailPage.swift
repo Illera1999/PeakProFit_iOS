@@ -8,16 +8,21 @@
 import SwiftUI
 import SDWebImageSwiftUI
 
+@MainActor
 struct ExerciseDetailPage: View {
 
     let exerciseID: String
     @State private var viewModel: ExerciseDetailViewModel
 
-    init(exerciseID: String) {
+    init(exerciseID: String, dataSource: any DataSourceProtocol) {
         self.exerciseID = exerciseID
         _viewModel = State(
-            initialValue: ExerciseDetailViewModel(exerciseID: exerciseID)
+            initialValue: ExerciseDetailViewModel(exerciseID: exerciseID, dataSource: dataSource)
         )
+    }
+
+    init(exerciseID: String) {
+        self.init(exerciseID: exerciseID, dataSource: AppContainer.shared.exercisesDataSource)
     }
     
     var body: some View {
@@ -39,7 +44,7 @@ struct ExerciseDetailPage: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color(.systemGray6))
+        .background(Color("ColorAppBackground"))
         .toolbar(.hidden, for: .navigationBar)
         .task {
             if viewModel.exercise == nil {

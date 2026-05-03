@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class ExercisesListViewModel {
     var allExercises: [ExerciseEntity] = []
@@ -18,8 +19,12 @@ final class ExercisesListViewModel {
 
     private let dataSource: any DataSourceProtocol
 
-    init() {
-        self.dataSource = AppContainer.shared.exercisesDataSource
+    init(dataSource: any DataSourceProtocol) {
+        self.dataSource = dataSource
+    }
+
+    convenience init() {
+        self.init(dataSource: AppContainer.shared.exercisesDataSource)
     }
 
     var availableDifficulties: [String] {

@@ -8,6 +8,7 @@ import Foundation
 import Observation
 import FirebaseAuth
 
+@MainActor
 @Observable
 final class SessionViewModel {
     static let shared = SessionViewModel()
@@ -25,13 +26,15 @@ final class SessionViewModel {
 
     private init() {
         handle = Auth.auth().addStateDidChangeListener { [weak self] _, user in
-            guard let self else { return }
-            self.currentUser = user
-            self.isAuthenticated = (user != nil)
-            if user != nil {
-                self.isGuestMode = false
+            Task { @MainActor in
+                guard let self else { return }
+                self.currentUser = user
+                self.isAuthenticated = (user != nil)
+                if user != nil {
+                    self.isGuestMode = false
+                }
+                self.isLoading = false
             }
-            self.isLoading = false
         }
     }
     
@@ -69,11 +72,5 @@ final class SessionViewModel {
             print("Local favorites cleanup error: \(error.localizedDescription)")
         }
         isGuestMode = false
-    }
-
-    deinit {
-        if let handle {
-            Auth.auth().removeStateDidChangeListener(handle)
-        }
     }
 }

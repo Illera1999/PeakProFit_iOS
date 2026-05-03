@@ -1,6 +1,7 @@
 import SwiftUI
 import FirebaseAuth
 
+@MainActor
 struct SavedExercisesListView: View {
     @State private var session = SessionViewModel.shared
     @State private var viewModel = SavedExercisesListViewModel()
@@ -50,6 +51,7 @@ struct SavedExercisesListView: View {
     }
 }
 
+@MainActor
 struct SavedExerciseDetailPage: View {
     let exercise: ExerciseEntity
 
@@ -59,12 +61,25 @@ struct SavedExerciseDetailPage: View {
     @State private var editableNote = ""
     @State private var storedInstructions: [String] = []
 
-    private let favoritesStore = FavoritesStore.shared
+    private let favoritesStore: FavoritesStore
     private let maxNoteLength = 124
 
-    init(exercise: ExerciseEntity) {
+    init(
+        exercise: ExerciseEntity,
+        favoritesStore: FavoritesStore,
+        dataSource: any DataSourceProtocol
+    ) {
         self.exercise = exercise
-        _detailViewModel = State(initialValue: ExerciseDetailViewModel(exerciseID: exercise.id))
+        self.favoritesStore = favoritesStore
+        _detailViewModel = State(initialValue: ExerciseDetailViewModel(exerciseID: exercise.id, dataSource: dataSource))
+    }
+
+    init(exercise: ExerciseEntity) {
+        self.init(
+            exercise: exercise,
+            favoritesStore: .shared,
+            dataSource: AppContainer.shared.exercisesDataSource
+        )
     }
 
     var body: some View {
@@ -104,7 +119,7 @@ struct SavedExerciseDetailPage: View {
                                 .padding(10)
                                 .background(
                                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                        .fill(Color.white)
+                                        .fill(Color("ColorSurface"))
                                 )
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 12, style: .continuous)
@@ -123,17 +138,17 @@ struct SavedExerciseDetailPage: View {
                                     .foregroundStyle(Color("ColorTextSecondary"))
                             }
 
-                            Button("Guardar") {
+                            Button {
                                 saveNote()
+                            } label: {
+                                HStack {
+                                    Spacer()
+                                    Text("Guardar")
+                                        .font(.custom("Lexend-Medium", size: 14))
+                                    Spacer()
+                                }
+                                .styleAuthPrimaryButton()
                             }
-                            .font(.custom("Lexend-Medium", size: 14))
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .background(
-                                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                    .fill(Color("ColorBrandGreen"))
-                            )
                             .buttonStyle(.plain)
                             .disabled(session.currentUser?.uid == nil || personalNote == editableNote)
                             .opacity(session.currentUser?.uid == nil || personalNote == editableNote ? 0.5 : 1)
@@ -148,7 +163,7 @@ struct SavedExerciseDetailPage: View {
                 }
             }
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
+        .background(Color("ColorAppBackground").ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
         .task(id: "\(session.currentUser?.uid ?? "")-\(exercise.id)") {

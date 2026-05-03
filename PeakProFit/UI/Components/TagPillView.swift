@@ -17,7 +17,7 @@ struct TagPillView: View {
             .padding(.vertical, 6)
             .background(
                 Capsule(style: .continuous)
-                    .fill(Color(.systemGray5))
+                    .fill(Color("ColorPillBackground"))
             )
             .fixedSize() // evita que se estire raro
     }

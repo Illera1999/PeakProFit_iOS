@@ -12,7 +12,7 @@ final class FavoritesStore {
 
     private let context: NSManagedObjectContext
 
-    private init(context: NSManagedObjectContext? = nil) {
+    init(context: NSManagedObjectContext? = nil) {
         let resolvedContext = context ?? PersistenceController.shared.container.viewContext
         self.context = resolvedContext
     }
@@ -25,7 +25,7 @@ final class FavoritesStore {
         if let existing = favoriteObject(userId: userId, exerciseId: exercise.id) {
             update(existing: existing, with: exercise, userId: userId)
         } else {
-            let entity = NSEntityDescription.insertNewObject(forEntityName: "FavoriteExercise", into: context)
+            let entity = FavoriteExercise(context: context)
             update(existing: entity, with: exercise, userId: userId)
         }
 
@@ -46,7 +46,7 @@ final class FavoritesStore {
     }
 
     func removeAllFavorites(userId: String) throws {
-        let request = NSFetchRequest<NSManagedObject>(entityName: "FavoriteExercise")
+        let request = FavoriteExercise.fetchRequest()
         request.predicate = NSPredicate(format: "userId == %@", userId)
         let objects = try context.fetch(request)
 
@@ -61,7 +61,7 @@ final class FavoritesStore {
     }
 
     func fetchFavorites(userId: String) throws -> [ExerciseEntity] {
-        let request = NSFetchRequest<NSManagedObject>(entityName: "FavoriteExercise")
+        let request = FavoriteExercise.fetchRequest()
         request.predicate = NSPredicate(format: "userId == %@", userId)
         request.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
 
@@ -72,7 +72,7 @@ final class FavoritesStore {
     func updatePersonalNote(userId: String, exerciseId: String, note: String) throws {
         guard let object = favoriteObject(userId: userId, exerciseId: exerciseId) else { return }
         let safeNote = String(note.prefix(Self.maxNoteLength))
-        object.setValue(safeNote, forKey: "personalNote")
+        object.personalNote = safeNote
 
         if context.hasChanges {
             try context.save()
@@ -82,7 +82,7 @@ final class FavoritesStore {
 
     func fetchPersonalNote(userId: String, exerciseId: String) -> String {
         guard let object = favoriteObject(userId: userId, exerciseId: exerciseId) else { return "" }
-        return (object.value(forKey: "personalNote") as? String) ?? ""
+        return object.personalNote ?? ""
     }
 
     func updateStoredExerciseInfo(
@@ -92,10 +92,10 @@ final class FavoritesStore {
         difficulty: String?
     ) throws {
         guard let object = favoriteObject(userId: userId, exerciseId: exerciseId) else { return }
-        object.setValue(serialize(instructions), forKey: "instructionsRaw")
+        object.instructionsRaw = serialize(instructions)
 
         if let normalizedDifficulty = normalizeText(difficulty) {
-            object.setValue(normalizedDifficulty, forKey: "difficulty")
+            object.difficulty = normalizedDifficulty
         }
 
         if context.hasChanges {
@@ -105,12 +105,11 @@ final class FavoritesStore {
 
     func fetchStoredInstructions(userId: String, exerciseId: String) -> [String] {
         guard let object = favoriteObject(userId: userId, exerciseId: exerciseId) else { return [] }
-        let instructionsRaw = object.value(forKey: "instructionsRaw") as? String
-        return deserialize(instructionsRaw)
+        return deserialize(object.instructionsRaw)
     }
 
-    private func favoriteObject(userId: String, exerciseId: String) -> NSManagedObject? {
-        let request = NSFetchRequest<NSManagedObject>(entityName: "FavoriteExercise")
+    private func favoriteObject(userId: String, exerciseId: String) -> FavoriteExercise? {
+        let request = FavoriteExercise.fetchRequest()
         request.fetchLimit = 1
         request.predicate = NSPredicate(format: "userId == %@ AND exerciseId == %@", userId, exerciseId)
 
@@ -122,14 +121,14 @@ final class FavoritesStore {
         }
     }
 
-    private func update(existing object: NSManagedObject, with exercise: ExerciseEntity, userId: String) {
-        object.setValue(userId, forKey: "userId")
-        object.setValue(exercise.id, forKey: "exerciseId")
-        object.setValue(exercise.name, forKey: "name")
-        object.setValue(serialize(exercise.targetMuscles), forKey: "targetMusclesRaw")
-        object.setValue(serialize(exercise.equipments), forKey: "equipmentsRaw")
-        object.setValue(normalizeText(exercise.difficulty), forKey: "difficulty")
-        object.setValue(Date(), forKey: "createdAt")
+    private func update(existing object: FavoriteExercise, with exercise: ExerciseEntity, userId: String) {
+        object.userId = userId
+        object.exerciseId = exercise.id
+        object.name = exercise.name
+        object.targetMusclesRaw = serialize(exercise.targetMuscles)
+        object.equipmentsRaw = serialize(exercise.equipments)
+        object.difficulty = normalizeText(exercise.difficulty)
+        object.createdAt = Date()
     }
 
     private func normalizeText(_ value: String?) -> String? {
@@ -155,22 +154,18 @@ final class FavoritesStore {
         return decoded
     }
 
-    private func mapToExerciseEntity(_ object: NSManagedObject) -> ExerciseEntity? {
-        guard let id = object.value(forKey: "exerciseId") as? String,
-              let name = object.value(forKey: "name") as? String else {
+    private func mapToExerciseEntity(_ object: FavoriteExercise) -> ExerciseEntity? {
+        guard let id = object.exerciseId,
+              let name = object.name else {
             return nil
         }
-
-        let targetMusclesRaw = object.value(forKey: "targetMusclesRaw") as? String
-        let equipmentsRaw = object.value(forKey: "equipmentsRaw") as? String
-        let difficulty = normalizeText(object.value(forKey: "difficulty") as? String)
 
         return ExerciseEntity(
             id: id,
             name: name,
-            targetMuscles: deserialize(targetMusclesRaw),
-            equipments: deserialize(equipmentsRaw),
-            difficulty: difficulty
+            targetMuscles: deserialize(object.targetMusclesRaw),
+            equipments: deserialize(object.equipmentsRaw),
+            difficulty: normalizeText(object.difficulty)
         )
     }
 }

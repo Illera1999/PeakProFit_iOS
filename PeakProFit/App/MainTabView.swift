@@ -22,6 +22,9 @@ struct MainTabView: View {
                     Label("Profile", systemImage: "person")
                 }
         }
+        .tint(Color("ColorBrandGreen"))
+        .toolbarBackground(Color("ColorSurface"), for: .tabBar)
+        .toolbarBackground(.visible, for: .tabBar)
     }
 }
 

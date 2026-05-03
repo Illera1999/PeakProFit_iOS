@@ -6,7 +6,7 @@ struct SavedExercisesPage: View {
             HeaderView(title: "Saved Exercises", showsBackButton: true)
             SavedExercisesListView()
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
+        .background(Color("ColorAppBackground").ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
         .toolbar(.hidden, for: .navigationBar)
     }
@@ -17,4 +17,3 @@ struct SavedExercisesPage: View {
         SavedExercisesPage()
     }
 }
-

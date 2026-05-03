@@ -16,8 +16,8 @@ struct ProfilePage: View {
             HeaderView(title: "Profile")
 
             VStack(spacing: 16) {
-                if session.isAuthenticated, let email = session.currentUser?.email, !email.isEmpty {
-                    ProfileLoggedView(currectUser: session.currentUser!)
+                if session.isAuthenticated, let currentUser = session.currentUser {
+                    ProfileLoggedView(currentUser: currentUser)
                 } else {
                     ProfileUnLoggedView()
                 }
@@ -28,7 +28,7 @@ struct ProfilePage: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color(.systemGray6).ignoresSafeArea())
+        .background(Color("ColorAppBackground").ignoresSafeArea())
     }
 }
 

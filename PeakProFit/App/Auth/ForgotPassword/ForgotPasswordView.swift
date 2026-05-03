@@ -61,9 +61,9 @@ struct ForgotPasswordView: View {
             .padding(.horizontal, 24)
             .padding(.top, 8)
             .padding(.bottom, 12)
-            .background(Color(.systemGray6))
+            .background(Color("ColorAppBackground"))
         }
-        .background(Color(.systemGray6).ignoresSafeArea())
+        .background(Color("ColorAppBackground").ignoresSafeArea())
     }
 }
 

@@ -14,7 +14,7 @@ struct ExercisesPage: View {
                 HeaderView(title: "Exercises")
                 ExercisesListView()
             }
-            .background(Color(.systemGray6).ignoresSafeArea())
+            .background(Color("ColorAppBackground").ignoresSafeArea())
         }
     }
 

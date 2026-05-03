@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+@MainActor
 struct ExercisesListView: View {
     @State private var session = SessionViewModel.shared
     @State private var viewModel = ExercisesListViewModel()
@@ -74,7 +75,7 @@ struct ExercisesListView: View {
                         .padding(.vertical, 8)
                         .background(
                             Capsule(style: .continuous)
-                                .fill(viewModel.selectedDifficulty == nil ? Color("ColorBrandGreen") : Color(.systemGray5))
+                                .fill(viewModel.selectedDifficulty == nil ? Color("ColorBrandGreen") : Color("ColorPillBackground"))
                         )
                 }
                 .buttonStyle(.plain)
@@ -90,7 +91,7 @@ struct ExercisesListView: View {
                             .padding(.vertical, 8)
                             .background(
                                 Capsule(style: .continuous)
-                                    .fill(viewModel.selectedDifficulty == difficulty ? Color("ColorBrandGreen") : Color(.systemGray5))
+                                    .fill(viewModel.selectedDifficulty == difficulty ? Color("ColorBrandGreen") : Color("ColorPillBackground"))
                             )
                     }
                     .buttonStyle(.plain)
@@ -100,7 +101,7 @@ struct ExercisesListView: View {
             .padding(.vertical, 10)
         }
         .background(
-            Color(.systemGray6)
+            Color("ColorAppBackground")
                 .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
         )
     }

@@ -11,7 +11,7 @@ extension Text {
     func stylePageTitle() -> some View {
         self
             .font(.custom("Lexend-SemiBold", size: 30))
-            .foregroundStyle(Color.black)
+            .foregroundStyle(Color.primary)
             .kerning(0) // 0% letter spacing
             .multilineTextAlignment(.center)
     }
@@ -19,7 +19,7 @@ extension Text {
     func styleHeader() -> some View {
         self
             .font(.custom("Lexend-Bold", size: 16))
-            .foregroundStyle(Color.black)
+            .foregroundStyle(Color.primary)
             .kerning(0) // 0% letter spacing
             .multilineTextAlignment(.leading)
     }

@@ -8,14 +8,36 @@
 import SwiftUI
 import FirebaseAuth
 
+@MainActor
 struct CardView: View {
     let exercise: ExerciseEntity
-    @State private var session = SessionViewModel.shared
+    @State private var session: SessionViewModel
     @State private var isFavorite = false
     @State private var isUpdatingFavorite = false
 
-    private let favoritesStore = FavoritesStore.shared
-    private let dataSource: any DataSourceProtocol = AppContainer.shared.exercisesDataSource
+    private let favoritesStore: FavoritesStore
+    private let dataSource: any DataSourceProtocol
+
+    init(
+        exercise: ExerciseEntity,
+        session: SessionViewModel,
+        favoritesStore: FavoritesStore,
+        dataSource: any DataSourceProtocol
+    ) {
+        self.exercise = exercise
+        _session = State(initialValue: session)
+        self.favoritesStore = favoritesStore
+        self.dataSource = dataSource
+    }
+
+    init(exercise: ExerciseEntity) {
+        self.init(
+            exercise: exercise,
+            session: .shared,
+            favoritesStore: .shared,
+            dataSource: AppContainer.shared.exercisesDataSource
+        )
+    }
 
     var body: some View {
         HStack(alignment: .top, spacing: 18){
@@ -46,9 +68,9 @@ struct CardView: View {
         .padding(18)
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(Color.white)
+                .fill(Color("ColorSurface"))
         )
-        .shadow(color: Color.black.opacity(0.10), radius: 12, x: 0, y: 6)
+        .shadow(color: Color.black.opacity(0.18), radius: 10, x: 0, y: 4)
         .task(id: session.currentUser?.uid) {
             refreshFavoriteState()
         }

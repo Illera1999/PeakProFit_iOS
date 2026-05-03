@@ -20,13 +20,13 @@ struct ProfileLoggedView: View {
     @State private var isShowingDeleteAccountAlert = false
     @State private var isDeletingAccount = false
 
-    let currectUser: User
+    let currentUser: User
     
     var body: some View {
         VStack(spacing: 16) {
             Text("Logged in as:")
                 .styleSubtitle()
-            Text(currectUser.email ?? "Email not available")
+            Text(currentUser.email ?? "Email not available")
                 .styleHeader()
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 24)
@@ -45,7 +45,7 @@ struct ProfileLoggedView: View {
                 .padding(.vertical, 14)
                 .background(
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(Color.white)
+                        .fill(Color("ColorSurface"))
                 )
             }
             .buttonStyle(.plain)

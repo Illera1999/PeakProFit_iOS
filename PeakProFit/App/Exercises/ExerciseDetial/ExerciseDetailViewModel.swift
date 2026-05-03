@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 
+@MainActor
 @Observable
 final class ExerciseDetailViewModel {
     let exerciseID: String
@@ -19,9 +20,9 @@ final class ExerciseDetailViewModel {
 
     private let dataSource: any DataSourceProtocol
 
-    init(exerciseID: String) {
+    init(exerciseID: String, dataSource: any DataSourceProtocol) {
         self.exerciseID = exerciseID
-        self.dataSource = AppContainer.shared.exercisesDataSource
+        self.dataSource = dataSource
     }
 
     func loadExercise() async {

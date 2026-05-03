@@ -10,9 +10,12 @@ final class AppContainer {
 
     let exercisesDataSource: any DataSourceProtocol
 
-    private init() {
+    init(exercisesDataSource: (any DataSourceProtocol)? = nil) {
+        if let exercisesDataSource {
+            self.exercisesDataSource = exercisesDataSource
+            return
+        }
         let apiClient = APIClient(baseURL: AppConfig.apiBaseURL)
-        // En caso de que quiera cambiar la implementación cambio [DataSourceImplement]
         self.exercisesDataSource = DataSourceImplement(apiClient: apiClient)
     }
 }

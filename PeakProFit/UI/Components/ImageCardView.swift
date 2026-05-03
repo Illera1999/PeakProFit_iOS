@@ -41,7 +41,7 @@ struct ImageCardView: View {
         }
         .frame(maxWidth: width == nil ? .infinity : nil)
         .frame(width: width, height: height)
-        .background(Color(.systemGray5))
+        .background(Color("ColorPillBackground"))
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
     }
 

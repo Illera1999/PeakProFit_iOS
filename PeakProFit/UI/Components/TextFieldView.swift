@@ -35,7 +35,7 @@ struct TextFieldView: View {
                         isPasswordVisible.toggle()
                     } label: {
                         Image(systemName: isPasswordVisible ? "eye.slash" : "eye")
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.primary)
                     }
                     .buttonStyle(.plain)
                 }
@@ -45,14 +45,14 @@ struct TextFieldView: View {
                         text = ""
                     } label: {
                         Image(systemName: "xmark")
-                            .foregroundStyle(.black)
+                            .foregroundStyle(.primary)
                     }
                     .buttonStyle(.plain)
                 }
             }
             .padding(.horizontal, 16)
             .frame(height: 56)
-            .background(Color.white)
+            .background(Color("ColorSurface"))
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
             .overlay(
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
